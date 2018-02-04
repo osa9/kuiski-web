@@ -11,7 +11,7 @@ class App extends Component {
           <h1 className="App-title">Welcome to KUISki</h1>
         </header>
         <p className="App-intro">
-          KUISki
+          CI Test
         </p>
       </div>
     );
