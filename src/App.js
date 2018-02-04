@@ -18,8 +18,8 @@ const users = {
   rgn_k_: {name: 'みき', icon: 'icons/rgn_k_.jpg', debt: 0},
   yamato: {name: 'やまと', icon: 'icons/roadroller_da.jpg', debt: 0},
   sasa: {name: 'ささ', icon: 'icons/sasa_buttyo.jpg', debt: 0},
-  uestu: {name: 'うえつ', icon: 'icons/xjuka.jpg', debt: 0},
-  xjuka: {name: 'よっしー', icon: 'icons/uetsu.png', debt: 0},
+  uestu: {name: 'よっしー', icon: 'icons/xjuka.jpg', debt: 0},
+  xjuka: {name: 'うえつ', icon: 'icons/uetsu.png', debt: 0},
 }
 
 const initialState = {
