@@ -1,6 +1,3 @@
-import CardHeader from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
-
 export const USER_LOAD_COMPLETE='USER_LOAD_COMPLETE';
 export const USER_LOAD_ERROR='USER_LOAD_ERROR';
 export const UPDATE_DEBT='UPDATE_DEBT';
@@ -11,13 +8,13 @@ const userLoadCompleteAction = (users) => {
         users: users
     };
 }
-
+/*
 const userLoadErrorAction = (message) => {
     return {
         type: USER_LOAD_ERROR,
         message: message
     };
-}
+}*/
 
 const updateDebtAction = (user, amount) => {
     return {
@@ -50,16 +47,4 @@ export const getUserList = () => (dispatch) => {
 
 export const updateDebt = (user, amount, notify) => (dispatch) => {
     dispatch(updateDebtAction(user, amount));
-    /*notify({
-        level: 'success',
-        children: (
-            <CardHeader
-              avatar={
-                <Avatar src={user.icon} />
-              }
-              title="罰金"
-              subheader={`+${amount}`}
-          />
-        )
-    }); */
 }

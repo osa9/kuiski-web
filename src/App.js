@@ -11,28 +11,6 @@ import PubNubReact from 'pubnub-react';
 
 import NotificationSystem from 'react-notification-system';
 
-//var NotificationSystem = require('react-notification-system');
-
-
-
-
-const styles = {
-  root: {
-    width: '100%',
-  },
-
-  chip: {
-    margin: 4,
-  },
-  flex: {
-    flex: 1,
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-};
-
 
 class App extends Component {
   constructor() {

@@ -20,7 +20,6 @@ class ScoreBoard extends Component {
 
     render() {
         const users = this.props.ScoreBoard.users;
-        const onNotify = this.props.onNotify;
 
         return (
             <Card>
@@ -35,7 +34,7 @@ class ScoreBoard extends Component {
     }
 
     renderUsers(users, onNotify) {
-        const ranking = users.sort((a, b) => b.debt - a. debt);
+        const ranking = users.sort((a, b) => b.debt - a.debt);
         return ranking.map(user => {
             return (
                 <UserScore user={user} onDebt={onNotify} />
