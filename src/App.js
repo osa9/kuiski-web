@@ -1,103 +1,108 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {connect} from 'react-redux';
 import './App.css';
 
-import Avatar from 'material-ui/Avatar';
-import {List, ListItem} from 'material-ui/List';
-import FlatButton from 'material-ui/FlatButton';
+import Header from './components/Header';
+import {ScoreBoard} from './components/ScoreBoard';
 
-const users = {
-  osa9: {name: 'おさ', icon: 'icons/osa9.jpg', debt: 0},
-  alka_line: {name: '蒼', icon: 'icons/alka_line.jpg', debt: 0},
-  daisuke_k: {name: '小谷', icon: 'icons/daisuke_k.jpg', debt: 0},
-  hans_doi: {name: 'どいこん', icon: 'icons/hans_doi.jpg', debt: 0},
-  iame_bucher: {name: 'ぶっひゃあ', icon: 'icons/iame_bucher.jpg', debt: 0},
-  y_f_: {name: 'わいえふ', icon: 'icons/y_f_.jpg', debt: 0},
-  tom: {name: 'とむ', icon: 'icons/ototomosama.jpg', debt: 0},
-  totoro: {name: 'ととろ', icon: 'icons/ototorosama.jpg', debt: 0},
-  rgn_k_: {name: 'みき', icon: 'icons/rgn_k_.jpg', debt: 0},
-  yamato: {name: 'やまと', icon: 'icons/roadroller_da.jpg', debt: 0},
-  sasa: {name: 'ささ', icon: 'icons/sasa_buttyo.jpg', debt: 0},
-  uestu: {name: 'よっしー', icon: 'icons/xjuka.jpg', debt: 0},
-  xjuka: {name: 'うえつ', icon: 'icons/uetsu.png', debt: 0},
-}
+import Grid from 'material-ui/Grid';
 
-const initialState = {
-  users: users
-}
+import PubNubReact from 'pubnub-react';
+
+import NotificationSystem from 'react-notification-system';
+
+//var NotificationSystem = require('react-notification-system');
+
+
+
+
+const styles = {
+  root: {
+    width: '100%',
+  },
+
+  chip: {
+    margin: 4,
+  },
+  flex: {
+    flex: 1,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+};
+
 
 class App extends Component {
   constructor() {
     super();
-
-    this.state = initialState;
-    this.onClick = this.onClick.bind(this);
-    this.updateDebt = this.updateDebt.bind(this);
+    this.initPubNub();
+    this.onNotify = this.onNotify.bind(this);
   }
 
-  updateDebt(username, amount = 1000) {
-    var newUsers = {}
+  initPubNub() {
+    this.pubnub = new PubNubReact({
+      publishKey: 'pub-c-ce0c67c2-ebed-4b63-a04d-bae8f872e669',
+      subscribeKey: 'sub-c-8f1bb4c4-0cc2-11e8-afa0-d615f40beee2'
+    });
+    this.pubnub.init(this);
+  }
 
-    for (let key in this.state.users) {
-      const user = this.state.users[key];
+  componentWillMount() {
+    this.pubnub.subscribe({ channels: ['dev'], withPresence: true });
+    this.pubnub.getMessage('dev', (payload) => {
+      console.log(payload);
+      const data = payload.message;
+      this.onNotify({level: 'success', message: data.message});
+    });
+  }
 
-      var debt = user.debt;
-      if (key === username) {
-        debt += amount;
-      }
+  componentDidMount() {
+    this._notificationSystem = this.refs.notificationSystem;
 
-      newUsers[key] = Object.assign({}, user, {
-        debt: debt
-      });
-    }
+    this.pubnub.getStatus((st) => {
+      console.log(st);
+      this.pubnub.publish({ message: {message: 'hello world from react'}, channel: 'dev' });
+    });
+  }
 
-    this.setState({
-      users: newUsers
-    })
+  componentWillUnmount() {
+    this.pubnub.unsubscribe({ channels: ['dev'] });
   }
 
   onClick(obj) {
     console.log(this);
   }
 
+  onNotify(n) {
+    console.log(n);
+    this._notificationSystem.addNotification(n);
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to KUISki</h1>
-        </header>
-        <p className="App-intro">
-          <List>
-            { this.renderUsers() }
-          </List>
-        </p>
+        <Header title="KUISki" />
+        <NotificationSystem ref="notificationSystem" />
+
+        <div className="App-intro">
+          <Grid container>
+            <Grid item>
+              <ScoreBoard onNotify={ (n) => this.onNotify(n) } />
+            </Grid>
+            <Grid item>
+              Right content
+            </Grid>
+          </Grid>
+        </div>
       </div>
     );
   }
-
-  renderUsers() {
-    var result = [];
-
-    for (let key in this.state.users) {
-      const user = this.state.users[key];
-      result.push((
-        <ListItem
-          disabled={true}
-          leftAvatar={
-            <Avatar src={user.icon} />
-          }
-        >
-          {user.name}
-          <FlatButton id={user} label="罰金" secondary={true} onClick={() => this.updateDebt(key) } />
-
-          {user.debt}円
-        </ListItem>
-      ));
-    }
-
-    return result;
-  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return state;
+}
+
+export default connect(mapStateToProps, null)(App);
