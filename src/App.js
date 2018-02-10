@@ -56,7 +56,7 @@ class App extends Component {
         return this._notificationSystem.addNotification({level: n.level, message: n.message});
       case 'debt':
         const data = JSON.parse(n.message);
-        this._notificationSystem.addNotification({
+        return this._notificationSystem.addNotification({
           level: n.level,
           message: `${data.userId} 罰金+${data.newDebt - data.currentDebt}`
         });
