@@ -60,6 +60,9 @@ class App extends Component {
           level: n.level,
           message: `${data.userId} 罰金+${data.newDebt - data.currentDebt}`
         });
+      default:
+        console.log('Unknonwn message');
+        return;
     }
   }
 
