@@ -62,7 +62,7 @@ class App extends Component {
         });
       default:
         console.log('Unknonwn message');
-        return;
+      break;
     }
   }
 
