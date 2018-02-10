@@ -17,6 +17,7 @@ class App extends Component {
     super();
     this.initPubNub();
     this.onNotify = this.onNotify.bind(this);
+    this.eventId = 'dev';
   }
 
   initPubNub() {
@@ -28,25 +29,20 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.pubnub.subscribe({ channels: ['dev'], withPresence: true });
-    this.pubnub.getMessage('dev', (payload) => {
-      console.log(payload);
+    this.pubnub.subscribe({ channels: [this.eventId], withPresence: true });
+    this.pubnub.getMessage(this.eventId, (payload) => {
       const data = payload.message;
-      this.onNotify({level: 'success', message: data.message});
+      this.onNotify({level: 'success', type: data.type, message: data.message});
     });
   }
 
   componentDidMount() {
     this._notificationSystem = this.refs.notificationSystem;
-
-    this.pubnub.getStatus((st) => {
-      console.log(st);
-      this.pubnub.publish({ message: {message: 'hello world from react'}, channel: 'dev' });
-    });
+    this._scoreBoard = this.refs.scoreBoard;
   }
 
   componentWillUnmount() {
-    this.pubnub.unsubscribe({ channels: ['dev'] });
+    this.pubnub.unsubscribe({ channels: [this.eventId] });
   }
 
   onClick(obj) {
@@ -55,7 +51,16 @@ class App extends Component {
 
   onNotify(n) {
     console.log(n);
-    this._notificationSystem.addNotification(n);
+    switch(n.type) {
+      case 'text':
+        return this._notificationSystem.addNotification({level: n.level, message: n.message});
+      case 'debt':
+        const data = JSON.parse(n.message);
+        this._notificationSystem.addNotification({
+          level: n.level,
+          message: `${data.userId} 罰金+${data.newDebt - data.currentDebt}`
+        });
+    }
   }
 
   render() {
@@ -67,7 +72,7 @@ class App extends Component {
         <div className="App-intro">
           <Grid container>
             <Grid item>
-              <ScoreBoard onNotify={ (n) => this.onNotify(n) } />
+              <ScoreBoard onNotify={ (n) => this.onNotify(n) } ref="scoreBoard" />
             </Grid>
             <Grid item>
               Right content

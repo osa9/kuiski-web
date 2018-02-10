@@ -16,17 +16,33 @@ const userLoadErrorAction = (message) => {
     };
 }*/
 
-const updateDebtAction = (user, amount) => {
+const updateDebtAction = (user, currentDebt, newDebt) => {
     return {
         type: UPDATE_DEBT,
         user: user,
-        amount: amount
+        currentDebt: currentDebt,
+        newDebt: newDebt
     };
 }
 
 export const getUserList = () => (dispatch) => {
+    fetch('https://api.kuis.ski/event/dev/users')
+    .then((res) => res.json())
+    .then((users) => {
+        console.log('getUserList Done!');
+
+        // 安定ソートのためにインデックス入れとく
+        const userNo = users.map((user, index) => {
+            return Object.assign({}, user, {
+                no: index
+            });
+        });
+
+        dispatch(userLoadCompleteAction(userNo));
+    });
+
     // Mock user
-    const users = [
+    /*const users = [
         {user: 'osa9', name: 'おさ', icon: '/icons/osa9.jpg', debt: 0},
         {user: 'alka_line', name: '蒼', icon: '/icons/alka_line.jpg', debt: 0},
         {user: 'daisuke_k', name: '小谷', icon: '/icons/daisuke_k.jpg', debt: 0},
@@ -40,11 +56,11 @@ export const getUserList = () => (dispatch) => {
         {user: 'sasa', name: 'ささ', icon: '/icons/sasa_buttyo.jpg', debt: 0},
         {user: 'uestu', name: 'よっしー', icon: '/icons/xjuka.jpg', debt: 0},
         {user: 'xjuka', name: 'うえつ', icon: '/icons/uetsu.png', debt: 0},
-    ];
-    
-    dispatch(userLoadCompleteAction(users));
+    ];*/
 }
 
-export const updateDebt = (user, amount, notify) => (dispatch) => {
-    dispatch(updateDebtAction(user, amount));
+export const updateDebt = (user, currentDebt, newDebt, notify) => (dispatch, state) => {
+    fetch(`https://api.kuis.ski/event/dev/users/${user}/debt?currentDebt=${currentDebt}&newDebt=${newDebt}`, {method: "PUT"}).then((res) => {
+        dispatch(updateDebtAction(user, currentDebt, newDebt));
+    });
 }

@@ -19,7 +19,7 @@ export default function reducer(state=initialState, action) {
 
         case Actions.UPDATE_DEBT:
             return updateState({
-                users: updateUserDebt(state.users, action.user, action.amount)
+                users: updateUserDebt(state.users, action.user, action.newDebt)
             });
 
         default:
@@ -27,9 +27,9 @@ export default function reducer(state=initialState, action) {
     }
 }
 
-const updateUserDebt = (users, userId, amount) => {
+const updateUserDebt = (users, userId, newDebt) => {
     return users.map((user) => {
-        return user.user === userId ?
-            Object.assign({}, user, {debt: user.debt + amount}) : user;
+        return user.id === userId ?
+            Object.assign({}, user, {debt: newDebt}) : user;
     })
 };

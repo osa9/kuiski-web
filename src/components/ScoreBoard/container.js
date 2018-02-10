@@ -34,7 +34,15 @@ class ScoreBoard extends Component {
     }
 
     renderUsers(users, onNotify) {
-        const ranking = users.sort((a, b) => b.debt - a.debt);
+        // Chromeだとソートが安定じゃないので、罰金が同額の時は元の順序を維持する
+        const ranking = users.sort((a, b) => {
+            if (b.debt === a.debt) {
+                return b.no - a.no;
+            }
+
+            return b.debt - a.debt;
+        });
+
         return ranking.map(user => {
             return (
                 <UserScore user={user} onDebt={onNotify} />
@@ -42,9 +50,9 @@ class ScoreBoard extends Component {
         });
     }
 
-    onDebt(user, amount) {
-        this.props.updateDebt(user.user, amount);
-        this.props.onNotify({
+    onDebt(user, currentDebt, newDebt) {
+        this.props.updateDebt(user.id, currentDebt, newDebt);
+        /*this.props.onNotify({
             level: 'success',
             children: (
                 <CardHeader
@@ -54,7 +62,13 @@ class ScoreBoard extends Component {
                   title="罰金"
                   subheader="+1000円" />
             )
-        });
+        }); */
+    }
+
+    getNotification(message) {
+        const data = JSON.parse(message);
+        console.log(data);
+        return 'hello';
     }
 }
 
@@ -73,7 +87,7 @@ class UserScore extends Component {
                     secondary={ `${user.debt}円` }
                 />
             
-                <Button id={user} color="secondary" onClick={() => onDebt(user, 1000) }>
+                <Button id={user} color="secondary" onClick={() => onDebt(user, user.debt, user.debt+1000) }>
                     罰金
                 </Button>
             </ListItem>
@@ -89,8 +103,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getUserList: () => dispatch(Actions.getUserList()),
-        updateDebt: (name, amount) => dispatch(Actions.updateDebt(name, amount))
+        updateDebt: (name, currentDebt, newDebt) => dispatch(Actions.updateDebt(name, currentDebt, newDebt))
     }
 }
   
-export default connect(mapStateToProps, mapDispatchToProps)(ScoreBoard);
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(ScoreBoard);
