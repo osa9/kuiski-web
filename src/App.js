@@ -11,6 +11,37 @@ import PubNubReact from 'pubnub-react';
 
 import NotificationSystem from 'react-notification-system';
 
+import { CardHeader } from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
+
+
+class NotificationManager {
+  constructor(notificationSystem) {
+    this.notificationSystem = notificationSystem;
+  }
+
+  textMessage(text) {
+    this.notificationSystem.addNotification({
+      level: 'success',
+      message: text
+    });
+  }
+
+  iconTextMessage(icon, title, text) {
+    this.notificationSystem.addNotification({
+      level: 'success',
+      children: (
+          <CardHeader
+            avatar={
+              <Avatar src={icon} />
+            }
+            title={title}
+            subheader={text} />
+      )
+    });
+  }
+}
+
 
 class App extends Component {
   constructor() {
@@ -38,6 +69,7 @@ class App extends Component {
 
   componentDidMount() {
     this._notificationSystem = this.refs.notificationSystem;
+    this.notificationManager = new NotificationManager(this._notificationSystem);
     this._scoreBoard = this.refs.scoreBoard;
   }
 
@@ -56,10 +88,7 @@ class App extends Component {
         return this._notificationSystem.addNotification({level: n.level, message: n.message});
       case 'debt':
         const data = JSON.parse(n.message);
-        return this._notificationSystem.addNotification({
-          level: n.level,
-          message: `${data.userId} 罰金+${data.newDebt - data.currentDebt}`
-        });
+        return this.scoreNotifyHandler(data);
       default:
         console.log('Unknonwn message');
       break;
@@ -75,7 +104,10 @@ class App extends Component {
         <div className="App-intro">
           <Grid container>
             <Grid item>
-              <ScoreBoard onNotify={ (n) => this.onNotify(n) } ref="scoreBoard" />
+              <ScoreBoard
+                setNotifyHandler={ (handler) => this.scoreNotifyHandler = handler }
+                notificationManager={this.notificationManager}
+              />
             </Grid>
             <Grid item>
               Right content

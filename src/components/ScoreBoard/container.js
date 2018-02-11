@@ -12,10 +12,12 @@ class ScoreBoard extends Component {
     constructor() {
         super();
         this.onDebt = this.onDebt.bind(this);
+        this.onNotify = this.onNotify.bind(this);
     }
 
     componentDidMount() {
         this.props.getUserList();
+        this.props.setNotifyHandler(this.onNotify);
     }
 
     render() {
@@ -52,23 +54,20 @@ class ScoreBoard extends Component {
 
     onDebt(user, currentDebt, newDebt) {
         this.props.updateDebt(user.id, currentDebt, newDebt);
-        /*this.props.onNotify({
-            level: 'success',
-            children: (
-                <CardHeader
-                  avatar={
-                    <Avatar src={user.icon} />
-                  }
-                  title="罰金"
-                  subheader="+1000円" />
-            )
-        }); */
     }
 
-    getNotification(message) {
-        const data = JSON.parse(message);
-        console.log(data);
-        return 'hello';
+    getUserById(userId) {
+        for(let user of this.props.ScoreBoard.users) {
+            if (user.id === userId) return user;
+        }
+
+        console.log(`Failed to find user: ${userId}`);
+    }
+
+    onNotify(message) {
+        const user = this.getUserById(message.userId);
+        const amount = message.newDebt - message.currentDebt;
+        this.props.notificationManager.iconTextMessage(user.icon, `${user.name}アウト〜`, `${user.name} +${amount}円`);
     }
 }
 
