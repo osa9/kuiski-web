@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import './App.css';
 
 import Header from './components/Header';
-import {ScoreBoard} from './components/ScoreBoard';
+import { ScoreBoard } from './components/ScoreBoard';
 
 import Grid from 'material-ui/Grid';
 
@@ -31,14 +31,27 @@ class NotificationManager {
     this.notificationSystem.addNotification({
       level: 'success',
       children: (
-          <CardHeader
-            avatar={
-              <Avatar src={icon} />
-            }
-            title={title}
-            subheader={text} />
+        <CardHeader
+          avatar={
+            <Avatar src={icon} />
+          }
+          title={title}
+          subheader={text} />
       )
     });
+  }
+}
+
+const styles = {
+  header: {
+    //textAlign: 'center'
+  },
+  logo: {
+    width: 250,
+    margin: 15,
+  },
+  debtBox: {
+    width: 300
   }
 }
 
@@ -49,6 +62,7 @@ class App extends Component {
     this.initPubNub();
     this.onNotify = this.onNotify.bind(this);
     this.eventId = 'dev';
+    this.image = null;
   }
 
   initPubNub() {
@@ -63,7 +77,7 @@ class App extends Component {
     this.pubnub.subscribe({ channels: [this.eventId], withPresence: true });
     this.pubnub.getMessage(this.eventId, (payload) => {
       const data = payload.message;
-      this.onNotify({level: 'success', type: data.type, message: data.message});
+      this.onNotify({ level: 'success', type: data.type, message: data.message });
     });
   }
 
@@ -83,29 +97,51 @@ class App extends Component {
 
   onNotify(n) {
     console.log(n);
-    switch(n.type) {
+    switch (n.type) {
       case 'text':
-        return this._notificationSystem.addNotification({level: n.level, message: n.message});
+        return this._notificationSystem.addNotification({ level: n.level, message: n.message });
       case 'debt':
         const data = JSON.parse(n.message);
         return this.scoreNotifyHandler(data);
+      case 'image':
+        this.setImage(n.url);
       default:
         console.log('Unknonwn message');
-      break;
+        break;
     }
+  }
+
+  closeLightbox() {
+    this.image = null;
+  }
+
+  renderLightbox() {
+    if (!this.image) return null;
+
+    return (
+      <Lightbox
+        medium={this.image}
+        large={this.image}
+        alt="Hello World!"
+        onClose={this.closeLightbox}
+      />
+    )
   }
 
   render() {
     return (
       <div className="App">
-        <Header title="KUISki" />
+        <div style={styles.header}>
+          <img src='/images/kuiski.png' style={styles.logo} />
+        </div>
         <NotificationSystem ref="notificationSystem" />
+        {renderLightBox()}
 
         <div className="App-intro">
           <Grid container>
             <Grid item>
               <ScoreBoard
-                setNotifyHandler={ (handler) => this.scoreNotifyHandler = handler }
+                setNotifyHandler={(handler) => this.scoreNotifyHandler = handler}
                 notificationManager={this.notificationManager}
               />
             </Grid>
@@ -120,7 +156,15 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return state;
+  return state.App;
 }
 
-export default connect(mapStateToProps, null)(App);
+const mapDispatchToProps = (dispatch) => {
+  return dispatch;/*
+  return {
+      getUserList: () => dispatch(Actions.getUserList()),
+      updateDebt: (name, currentDebt, newDebt) => dispatch(Actions.updateDebt(name, currentDebt, newDebt))
+  } */
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

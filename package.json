@@ -8,6 +8,7 @@
     "pubnub-react": "^1.2.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-modal-image": "^2.1.4",
     "react-notification-system": "^0.2.16",
     "react-redux": "^5.0.6",
     "react-scripts": "1.1.0",
