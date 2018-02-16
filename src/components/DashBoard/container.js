@@ -16,6 +16,8 @@ import { Lightbox } from "react-modal-image";
 
 import * as Actions from './actions';
 
+import ReactPlayer from 'react-player';
+
 
 class NotificationManager {
     constructor(notificationSystem) {
@@ -67,6 +69,7 @@ class DashBoard extends Component {
         this.image = null;
 
         this.closeLightbox = this.closeLightbox.bind(this);
+        this.clearAudio = this.clearAudio.bind(this);
     }
 
     initPubNub() {
@@ -104,6 +107,8 @@ class DashBoard extends Component {
             case 'text':
                 return this._notificationSystem.addNotification({ level: n.level, message: n.message });
             case 'debt':
+                this.props.dispatch(Actions.playAudio('/sounds/out.mp3'));
+
                 const data = JSON.parse(n.message);
                 return this.scoreNotifyHandler(data);
             case 'image':
@@ -133,6 +138,21 @@ class DashBoard extends Component {
         )
     }
 
+    renderReactAudio() {
+        console.log(this.props.playAudio);
+        //if (!this.props.playAudio) return null;
+        const audio = this.props.audio;
+
+        return (
+            <ReactPlayer url={audio} playing width='0' height='0' onEnded={this.clearAudio} />
+        )
+    }
+
+    clearAudio() {
+        console.log('comp')
+        this.props.dispatch(Actions.playAudioComplete());
+    }
+
     render() {
         return (
             <div className="App">
@@ -141,6 +161,7 @@ class DashBoard extends Component {
                 </div>
                 <NotificationSystem ref="notificationSystem" />
                 {this.renderLightbox()}
+                {this.renderReactAudio()}
 
                 <div className="App-intro">
                     <Grid container>
@@ -167,7 +188,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         imageNotification: (url, timeout) => dispatch(Actions.imageNotification(url, timeout)),
-        closeImageNotification: () => dispatch(Actions.closeImageNotification())
+        closeImageNotification: () => dispatch(Actions.closeImageNotification()),
+        dispatch: dispatch
     }
 }
 

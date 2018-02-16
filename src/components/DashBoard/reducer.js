@@ -19,6 +19,18 @@ export default function reducer(state = initialState, action) {
                 notificationImage: null
             })
 
+        case Actions.PLAY_AUDIO:
+            return updateState({
+                playAudio: true,
+                audio: action.audio
+            })
+
+        case Actions.PLAY_AUDIO_COMPLETE:
+            return updateState({
+                playAudio: false,
+                audio: null
+            })
+
         default:
             return state;
     }
