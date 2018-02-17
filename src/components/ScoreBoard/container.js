@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import Avatar from 'material-ui/Avatar';
 import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
@@ -24,14 +24,11 @@ class ScoreBoard extends Component {
         const users = this.props.ScoreBoard.users;
 
         return (
-            <Card>
-                <CardHeader title="罰金" />
-                <CardContent>
-                    <List>
-                        { this.renderUsers(users, this.onDebt) }
-                    </List>
-                </CardContent>
-            </Card>
+            <div>
+                <List>
+                    {this.renderUsers(users, this.onDebt)}
+                </List>
+            </div>
         );
     }
 
@@ -47,7 +44,7 @@ class ScoreBoard extends Component {
 
         return ranking.map(user => {
             return (
-                <UserScore user={user} onDebt={onNotify} />
+                <UserScore key={user.id} user={user} onDebt={onNotify} />
             )
         });
     }
@@ -57,7 +54,7 @@ class ScoreBoard extends Component {
     }
 
     getUserById(userId) {
-        for(let user of this.props.ScoreBoard.users) {
+        for (let user of this.props.ScoreBoard.users) {
             if (user.id === userId) return user;
         }
 
@@ -75,7 +72,7 @@ class UserScore extends Component {
     render() {
         const user = this.props.user;
         const onDebt = this.props.onDebt;
-    
+
         return (
             <ListItem>
                 <ListItemAvatar>
@@ -83,10 +80,10 @@ class UserScore extends Component {
                 </ListItemAvatar>
                 <ListItemText
                     primary={user.name}
-                    secondary={ `${user.debt}円` }
+                    secondary={`${user.debt}円`}
                 />
-            
-                <Button id={user} color="secondary" onClick={() => onDebt(user, user.debt, user.debt+1000) }>
+
+                <Button id={user} color="secondary" onClick={() => onDebt(user, user.debt, user.debt + 1000)}>
                     罰金
                 </Button>
             </ListItem>
@@ -105,5 +102,5 @@ const mapDispatchToProps = (dispatch) => {
         updateDebt: (name, currentDebt, newDebt) => dispatch(Actions.updateDebt(name, currentDebt, newDebt))
     }
 }
-  
+
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(ScoreBoard);

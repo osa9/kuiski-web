@@ -5,24 +5,27 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
 import registerServiceWorker from './registerServiceWorker';
 
 import reducer from './reducer';
 
 import './index.css';
-//import App from './App';
 import { DashBoard } from './components/DashBoard';
+import { MobileBoard } from './components/MobileBoard';
+
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 
 const store = createStore(reducer, {}, applyMiddleware(thunk));
 
 ReactDOM.render(
     <Provider store={store}>
-        <MuiThemeProvider>
-            <DashBoard />
-        </MuiThemeProvider>
+        <Router>
+            <div>
+                <Route path="/" exact component={MobileBoard} />
+                <Route path="/dashboard" component={DashBoard} />
+            </div>
+        </Router>
     </Provider>,
     document.getElementById('root')
 );

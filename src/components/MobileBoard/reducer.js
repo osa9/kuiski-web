@@ -1,9 +1,15 @@
+import Immutable from 'immutable';
 import * as Actions from './actions';
 
 
 const initialState = {
     notificationImage: null,
-    audio: '/sounds/nosound.mp3'
+    audio: '/sounds/nosound.mp3',
+    view: 0,
+    keys: {},
+    images: {
+        resources: []
+    }
 }
 
 export default function reducer(state = initialState, action) {
@@ -20,19 +26,20 @@ export default function reducer(state = initialState, action) {
                 notificationImage: null
             })
 
-        case Actions.PLAY_AUDIO:
-            console.log(action.audio);
-            action.audio.play();
+        case Actions.VIEW_CHANGE:
             return updateState({
-                playAudio: true,
-                //audio: action.audio
+                view: action.view
             })
 
-        case Actions.PLAY_AUDIO_COMPLETE:
+        case Actions.GET_KEY_RESULT:
             return updateState({
-                playAudio: false,
-                audio: null
-            })
+                keys: action.payload
+            });
+
+        case Actions.GET_IMAGE_LIST_RESULT:
+            return updateState({
+                images: action.payload
+            });
 
         default:
             return state;

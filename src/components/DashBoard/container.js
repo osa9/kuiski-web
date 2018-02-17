@@ -65,11 +65,13 @@ class DashBoard extends Component {
         super();
         this.initPubNub();
         this.onNotify = this.onNotify.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.eventId = 'dev';
         this.image = null;
 
         this.closeLightbox = this.closeLightbox.bind(this);
         this.clearAudio = this.clearAudio.bind(this);
+
     }
 
     initPubNub() {
@@ -99,6 +101,15 @@ class DashBoard extends Component {
     }
 
     onClick(obj) {
+        this.audio = new Audio('/sounds/out.mp3');
+        console.log(this.audio);
+
+        this.audioControl.play().then(() => {
+            console.log('ok');
+
+        }).catch(err => {
+            console.log(err);
+        });
         console.log(this);
     }
 
@@ -107,7 +118,8 @@ class DashBoard extends Component {
             case 'text':
                 return this._notificationSystem.addNotification({ level: n.level, message: n.message });
             case 'debt':
-                this.props.dispatch(Actions.playAudio('/sounds/out.mp3'));
+                console.log(this.audio);
+                this.props.dispatch(Actions.playAudio(this.audio));//('/sounds/out.mp3'));
 
                 const data = JSON.parse(n.message);
                 return this.scoreNotifyHandler(data);
@@ -139,12 +151,16 @@ class DashBoard extends Component {
     }
 
     renderReactAudio() {
-        console.log(this.props.playAudio);
+        //console.log(this.props.playAudio);
         //if (!this.props.playAudio) return null;
         const audio = this.props.audio;
 
         return (
-            <ReactPlayer url={audio} playing width='0' height='0' onEnded={this.clearAudio} />
+            <audio src={this.props.audio} ref={(ref) => { this.audioControl = ref }} autoplay controls />
+        )
+
+        return (
+            <ReactPlayer url={audio} playing width='640' height='480' /*onEnded={this.clearAudio}*/ />
         )
     }
 
@@ -154,6 +170,7 @@ class DashBoard extends Component {
     }
 
     render() {
+        // {this.renderReactAudio()}
         return (
             <div className="App">
                 <div style={styles.header}>
@@ -161,7 +178,8 @@ class DashBoard extends Component {
                 </div>
                 <NotificationSystem ref="notificationSystem" />
                 {this.renderLightbox()}
-                {this.renderReactAudio()}
+                <audio src={this.props.audio} ref={(ref) => { this.audioControl = ref }} autoplay controls />
+                <div onClick={() => this.onClick()}>Play</div>
 
                 <div className="App-intro">
                     <Grid container>
