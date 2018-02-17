@@ -55,7 +55,6 @@ export const getImageList = () => (dispatch) => {
 
 function* getKeySaga(action) {
     try {
-        const task = action.payload;
         const response = yield call(() => fetch('http://api.kuis.ski/auth'));
         yield put(getKeyResult(response));
     } catch (e) {

@@ -13,7 +13,7 @@ import './index.css';
 import { DashBoard } from './components/DashBoard';
 import { MobileBoard } from './components/MobileBoard';
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 
 const store = createStore(reducer, {}, applyMiddleware(thunk));

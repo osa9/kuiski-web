@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Avatar from 'material-ui/Avatar';
 import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
 import Button from 'material-ui/Button';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
 
 import * as Actions from './actions';
 

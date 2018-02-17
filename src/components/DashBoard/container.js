@@ -16,7 +16,6 @@ import { Lightbox } from "react-modal-image";
 
 import * as Actions from './actions';
 
-import ReactPlayer from 'react-player';
 
 
 class NotificationManager {
@@ -158,10 +157,10 @@ class DashBoard extends Component {
         return (
             <audio src={this.props.audio} ref={(ref) => { this.audioControl = ref }} autoplay controls />
         )
-
-        return (
-            <ReactPlayer url={audio} playing width='640' height='480' /*onEnded={this.clearAudio}*/ />
-        )
+        /*
+                return (
+                    <ReactPlayer url={audio} playing width='640' height='480' onEnded={this.clearAudio} />
+                ) */
     }
 
     clearAudio() {

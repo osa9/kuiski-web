@@ -1,33 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-
 import { ScoreBoard } from '../ScoreBoard';
-
-import Grid from 'material-ui/Grid';
-
 import PubNubReact from 'pubnub-react';
-
 import NotificationSystem from 'react-notification-system';
-
-
 import Avatar from 'material-ui/Avatar';
-
 import Lightbox from "react-image-lightbox";
-
 import * as Actions from './actions';
-
-import ReactPlayer from 'react-player';
-
 import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
 import MoneyIcon from 'material-ui-icons/AttachMoney';
 import PhotoIcon from 'material-ui-icons/InsertPhoto';
 import LocationIcon from 'material-ui-icons/LocationOn';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
-
+import Card, { CardHeader } from 'material-ui/Card';
 import GoogleMap from 'google-map-react';
-
-import { Image, Video, Transformation, CloudinaryContext } from 'cloudinary-react';
+import { Image, Transformation } from 'cloudinary-react';
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
